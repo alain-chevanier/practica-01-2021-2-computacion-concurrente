@@ -70,10 +70,7 @@ public class WordSearchAnswer implements Comparable<WordSearchAnswer> {
 
   @Override
   public int compareTo(WordSearchAnswer o) {
-    int diff = this.word.compareTo(o.word);
-    if (diff == 0) {
-      return this.row == o.row ? this.column - o.column : this.row - o.row;
-    }
-    return diff;
+    // TODO: Implementala comparación pr
+    return 0;
   }
 }
