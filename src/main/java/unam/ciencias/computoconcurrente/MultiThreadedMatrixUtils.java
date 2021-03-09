@@ -59,35 +59,6 @@ public class MultiThreadedMatrixUtils implements MatrixUtils {
 
   @Override
   public int[][] multiply(int[][] matrixA) throws InterruptedException {
-    int[][] matrixC = new int[matrixA.length][matrixA.length];
-    List<Thread> threadList = new ArrayList<>(this.threads);
-    for (int i = 0; i < threads; i++) {
-      int threadId = i;
-      threadList.add(new Thread(() -> taskMultiply(threadId, matrixA, matrixC)));
-    }
-    threadList.forEach(Thread::start);
-    for (Thread t : threadList) {
-      t.join();
-    }
-    return matrixC;
-  }
-
-  private void taskMultiply(int threadId, int[][] matrixIn, int[][] matrixOut) {
-    int filas = matrixIn.length;
-    int[] vector = new int[filas];
-    for (int numFila = threadId; numFila < matrixIn.length; numFila += this.threads) {
-      for (int col0 = 0; col0 < filas; col0++) {
-        int c = 0;
-        for (int filaB = 0; filaB < filas; filaB++) {
-          c += (matrixIn[numFila][filaB] * matrixIn[filaB][col0]);
-        }
-        vector[col0] = c;
-      }
-      for (int i = 0; i < matrixOut.length; i++) {
-        matrixOut[numFila][i] = vector[i];
-      }
-
-    }
-
+    return new int[matrixA.length][matrixA.length];
   }
 }
