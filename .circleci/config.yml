@@ -1,0 +1,49 @@
+version: 2.1
+
+executors:
+  java9-only:
+    docker:
+      - image: circleci/openjdk:9-jdk
+    environment:
+      JAVA_ENV: localhost
+
+jobs:
+  build:
+    parallelism: 1
+    working_directory: /home/circleci/computacion-concurrente
+    executor: java9-only
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - computacion-concurrente-01-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: computacion-concurrente-01-{{ checksum "pom.xml" }}
+
+      - run: mvn clean test
+
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+
+      - store_test_results:
+          path: ~/test-results
+
+      - store_artifacts:
+          path: ~/test-results/junit
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build
